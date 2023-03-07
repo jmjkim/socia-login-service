@@ -1,6 +1,13 @@
 import { SocialLoginProvider } from '@/types/SocialLoginProvider';
 
-interface KakaoLoginResponse {}
+interface KakaoLoginResponse {
+  provider_id: string;
+  profile: {
+    scopes: string[];
+    user: { id: string; email: string };
+  };
+}
+
 class KakaoLogin implements SocialLoginProvider<KakaoLoginResponse> {
   login(): Promise<KakaoLoginResponse> {
     return Promise.resolve({

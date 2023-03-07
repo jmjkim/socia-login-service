@@ -13,16 +13,11 @@ export enum LoginErrors {
 }
 
 export interface SocialLoginResponse {
-  provider: {
-    name: string;
-    id: string;
-  };
-  profile: {
-    userId?: User;
-    username?: string;
-    email?: string | null;
-    scopes: string[];
-  };
+  providerId: string;
+  provider: string;
+  user?: User;
+  scopes?: string[];
+  email?: string | null;
 }
 
 class SocialLoginService {
@@ -37,39 +32,27 @@ class SocialLoginService {
 
     if (provider === 'kakao') {
       const r = await new KakaoLogin().login();
-      const userId: User = { id: r.profile.user.id };
       const resp: SocialLoginResponse = {
-        provider: {
-          name: provider,
-          id: r.provider_id,
-        },
-        profile: {
-          userId,
-          email: r.profile.user.email,
-          scopes: r.profile.scopes,
-        },
+        providerId: r.provider_id,
+        provider,
+        user: { id: r.profile.user.id },
+        scopes: r.profile.scopes,
+        email: r.profile.user.email,
       };
 
-      console.log(resp);
       return resp;
     } else if (provider === 'naver') {
       const r = await new NaverLogin().login();
       const resp: SocialLoginResponse = {
-        provider: {
-          name: provider,
-          id: r.provider.id,
-        },
-        profile: {
-          username: r.profile.user_name,
-          email: r.profile.email,
-          scopes: r.profile.scopes,
-        },
+        providerId: r.provider.id,
+        provider,
+        user: { id: r.profile.user_name },
+        scopes: r.profile.scopes,
+        email: r.profile.email,
       };
 
-      console.log(resp);
       return resp;
     } else {
-      console.log(LoginErrors.LoginProviderError);
       return LoginErrors.LoginProviderError;
     }
   }

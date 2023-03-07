@@ -5,7 +5,7 @@ const Main = () => {
     const service = new SocialLoginService({ provider });
     const resp = await service.login();
 
-    return resp;
+    alert(JSON.stringify(resp));
   };
 
   return (
